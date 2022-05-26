@@ -76,7 +76,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class ResourceFileIdAndUdfFileResourceList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<String> {
+    public static class ResourceFileIdAndUdfFileResourceList implements ResourceAcquisitionAndPermissionCheck<String> {
 
         private final ResourceMapper resourceMapper;
 
@@ -91,7 +91,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -102,7 +102,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class ResourceFileNameResourceList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<String> {
+    public static class ResourceFileNameResourceList implements ResourceAcquisitionAndPermissionCheck<String> {
 
         private final ResourceMapper resourceMapper;
 
@@ -117,7 +117,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -128,7 +128,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class DatasourceResourceList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class DatasourceResourceList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final DataSourceMapper dataSourceMapper;
 
@@ -143,7 +143,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -153,7 +153,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class UdfResourceList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class UdfResourceList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final UdfFuncMapper udfFuncMapper;
 
@@ -168,7 +168,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -178,7 +178,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class ProjectsResourceList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class ProjectsResourceList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final ProjectMapper projectMapper;
 
@@ -193,7 +193,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -203,7 +203,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class WorkerGroupList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class WorkerGroupList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final WorkerGroupMapper workerGroupMapper;
 
@@ -218,7 +218,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -228,7 +228,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class AlertGroupList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class AlertGroupList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final AlertGroupMapper alertGroupMapper;
 
@@ -243,7 +243,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
@@ -254,7 +254,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
     }
 
     @Component
-    public static class EnvironmentList extends AbstractResourcePermissionCheck implements ResourceAcquisitionAndPermissionCheck<Integer> {
+    public static class EnvironmentList implements ResourceAcquisitionAndPermissionCheck<Integer> {
 
         private final EnvironmentMapper environmentMapper;
 
@@ -269,7 +269,7 @@ public class ResourcePermissionCheckServiceImpl implements ResourcePermissionChe
 
         @Override
         public boolean permissionCheck(int userId, String url, Logger logger) {
-            return super.operationPermissionCommonCheck(userId, logger);
+            return false;
         }
 
         @Override
