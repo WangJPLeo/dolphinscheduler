@@ -17,6 +17,7 @@
 
 package org.apache.dolphinscheduler.api.service;
 
+import static org.apache.dolphinscheduler.api.constants.ApiFuncIdentificationConstant.ACCESS_TOKEN_CREATE;
 import static org.apache.dolphinscheduler.api.constants.ApiFuncIdentificationConstant.ACCESS_TOKEN_DELETE;
 import static org.apache.dolphinscheduler.api.constants.ApiFuncIdentificationConstant.ACCESS_TOKEN_UPDATE;
 
@@ -111,6 +112,8 @@ public class AccessTokenServiceTest {
     @Test
     public void testCreateToken() {
         // Given Token
+        when(resourcePermissionCheckService.operationPermissionCheck(AuthorizationType.ACCESS_TOKEN, 1, ACCESS_TOKEN_CREATE, baseServiceLogger)).thenReturn(true);
+        when(resourcePermissionCheckService.resourcePermissionCheck(AuthorizationType.ACCESS_TOKEN, null, 0, baseServiceLogger)).thenReturn(true);
         when(accessTokenMapper.insert(any(AccessToken.class))).thenReturn(2);
         Result result = accessTokenService.createToken(getLoginUser(), 1, getDate(), "AccessTokenServiceTest");
         logger.info(result.toString());

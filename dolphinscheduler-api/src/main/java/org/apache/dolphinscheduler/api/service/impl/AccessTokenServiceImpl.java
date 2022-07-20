@@ -97,8 +97,8 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
     public Map<String, Object> queryAccessTokenByUser(User loginUser, Integer userId) {
         Map<String, Object> result = new HashMap<>();
         result.put(Constants.STATUS, false);
-        // no permission
-        if (loginUser.getUserType().equals(UserType.GENERAL_USER) && loginUser.getId() != userId) {
+        // admin can operate all, non-admin can operate their own
+        if (tokenResourcePermissionCheck(loginUser, userId)) {
             putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
@@ -124,8 +124,8 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
     public Result createToken(User loginUser, int userId, String expireTime, String token) {
         Result result = new Result();
 
-        // 1. check permission
-        if (!(canOperatorPermissions(loginUser,null, AuthorizationType.ACCESS_TOKEN,ACCESS_TOKEN_CREATE) || loginUser.getId() == userId)) {
+        // 1. check func permission and resource permission check
+        if (!(canOperatorPermissions(loginUser,null, AuthorizationType.ACCESS_TOKEN, ACCESS_TOKEN_CREATE) || tokenResourcePermissionCheck(loginUser, userId))) {
             putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
@@ -190,7 +190,7 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
     @Override
     public Map<String, Object> delAccessTokenById(User loginUser, int id) {
         Map<String, Object> result = new HashMap<>();
-        if (!canOperatorPermissions(loginUser, null, AuthorizationType.ACCESS_TOKEN,ACCESS_TOKEN_DELETE)) {
+        if (!canOperatorPermissions(loginUser, null, AuthorizationType.ACCESS_TOKEN, ACCESS_TOKEN_DELETE)) {
             putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
@@ -203,7 +203,7 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
         }
 
         // admin can operate all, non-admin can operate their own
-        if (accessToken.getUserId() != loginUser.getId() && !loginUser.getUserType().equals(UserType.ADMIN_USER)) {
+        if (tokenResourcePermissionCheck(loginUser, accessToken.getUserId())) {
             putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
@@ -225,8 +225,8 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
     public Map<String, Object> updateToken(User loginUser, int id, int userId, String expireTime, String token) {
         Map<String, Object> result = new HashMap<>();
 
-        // 1. check permission
-        if (!canOperatorPermissions(loginUser, null,AuthorizationType.ACCESS_TOKEN,ACCESS_TOKEN_UPDATE)) {
+        // 1. check func permission and resource permission check
+        if (!canOperatorPermissions(loginUser, null, AuthorizationType.ACCESS_TOKEN, ACCESS_TOKEN_UPDATE) || tokenResourcePermissionCheck(loginUser, userId)) {
             putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
@@ -236,11 +236,6 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
         if (accessToken == null) {
             logger.error("access token not exist,  access token id {}", id);
             putMsg(result, Status.ACCESS_TOKEN_NOT_EXIST);
-            return result;
-        }
-        // admin can operate all, non-admin can operate their own
-        if (accessToken.getUserId() != loginUser.getId() && !loginUser.getUserType().equals(UserType.ADMIN_USER)) {
-            putMsg(result, Status.USER_NO_OPERATION_PERM);
             return result;
         }
 
@@ -260,5 +255,9 @@ public class AccessTokenServiceImpl extends BaseServiceImpl implements AccessTok
         result.put(Constants.DATA_LIST, accessToken);
         putMsg(result, Status.SUCCESS);
         return result;
+    }
+
+    private boolean tokenResourcePermissionCheck(User loginUser, Integer tokenUserId) {
+        return tokenUserId != loginUser.getId() && !loginUser.getUserType().equals(UserType.ADMIN_USER);
     }
 }
