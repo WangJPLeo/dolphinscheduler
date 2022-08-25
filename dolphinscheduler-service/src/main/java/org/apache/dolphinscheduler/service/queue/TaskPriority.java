@@ -72,11 +72,6 @@ public class TaskPriority implements Comparable<TaskPriority> {
     private int taskGroupPriority;
 
     /**
-     * last dispatch time
-     */
-    private long lastDispatchTime;
-
-    /**
      * dispatch failed retry times
      */
     private int dispatchFailedRetryTimes = 0;
@@ -169,14 +164,6 @@ public class TaskPriority implements Comparable<TaskPriority> {
 
     public void setTaskGroupPriority(int taskGroupPriority) {
         this.taskGroupPriority = taskGroupPriority;
-    }
-
-    public long getLastDispatchTime() {
-        return lastDispatchTime;
-    }
-
-    public void setLastDispatchTime(long lastDispatchTime) {
-        this.lastDispatchTime = lastDispatchTime;
     }
 
     public int getDispatchFailedRetryTimes() {

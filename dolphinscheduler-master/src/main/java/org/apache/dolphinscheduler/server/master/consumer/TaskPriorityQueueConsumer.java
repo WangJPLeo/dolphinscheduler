@@ -37,6 +37,7 @@ import org.apache.dolphinscheduler.server.master.processor.queue.TaskEventServic
 import org.apache.dolphinscheduler.server.master.runner.WorkflowExecuteRunnable;
 import org.apache.dolphinscheduler.service.exceptions.TaskPriorityQueueException;
 import org.apache.dolphinscheduler.service.process.ProcessService;
+import org.apache.dolphinscheduler.service.queue.TaskFailedRetryPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriorityQueue;
 
@@ -56,7 +57,6 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -70,16 +70,17 @@ public class TaskPriorityQueueConsumer extends BaseDaemonThread {
      */
     private static final Logger logger = LoggerFactory.getLogger(TaskPriorityQueueConsumer.class);
 
+    /**
+     * task priority queue
+     */
     @Autowired
-    @Qualifier(Constants.TASK_PRIORITY_QUEUE)
     private TaskPriorityQueue<TaskPriority> taskPriorityQueueImpl;
 
     /**
-     * taskDispatchFailedQueue
+     * task dispatch failed queue
      */
     @Autowired
-    @Qualifier(Constants.TASK_DISPATCH_FAILED_QUEUE)
-    private TaskPriorityQueue<TaskPriority> taskDispatchFailedQueueImpl;
+    private TaskPriorityQueue<TaskFailedRetryPriority> taskDispatchFailedQueueImpl;
 
     /**
      * processService
@@ -140,7 +141,7 @@ public class TaskPriorityQueueConsumer extends BaseDaemonThread {
                     TaskMetrics.incTaskDispatchFailed(failedDispatchTasks.size());
                     for (TaskPriority dispatchFailedTask : failedDispatchTasks) {
                         // put into failure queue after failure
-                        taskDispatchFailedQueueImpl.put(dispatchFailedTask);
+                        taskDispatchFailedQueueImpl.put(new TaskFailedRetryPriority(dispatchFailedTask));
                     }
                 }
             } catch (Exception e) {
@@ -168,7 +169,6 @@ public class TaskPriorityQueueConsumer extends BaseDaemonThread {
                 try {
                     boolean dispatchResult = this.dispatchTask(taskPriority);
                     if (!dispatchResult) {
-                        taskPriority.setLastDispatchTime(System.currentTimeMillis());
                         failedDispatchTasks.add(taskPriority);
                     }
                 } finally {

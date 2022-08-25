@@ -17,7 +17,6 @@
 
 package org.apache.dolphinscheduler.server.master.registry;
 
-import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.lifecycle.ServerLifeCycleException;
 import org.apache.dolphinscheduler.common.lifecycle.ServerLifeCycleManager;
 import org.apache.dolphinscheduler.common.lifecycle.ServerStatus;
@@ -29,13 +28,13 @@ import org.apache.dolphinscheduler.server.master.config.MasterConfig;
 import org.apache.dolphinscheduler.server.master.event.WorkflowEventQueue;
 import org.apache.dolphinscheduler.server.master.rpc.MasterRPCServer;
 import org.apache.dolphinscheduler.server.master.runner.StateWheelExecuteThread;
+import org.apache.dolphinscheduler.service.queue.TaskFailedRetryPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriorityQueue;
 import org.apache.dolphinscheduler.service.registry.RegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -63,11 +62,9 @@ public class MasterWaitingStrategy implements MasterConnectStrategy {
     @Autowired
     private StateWheelExecuteThread stateWheelExecuteThread;
     @Autowired
-    @Qualifier(Constants.TASK_PRIORITY_QUEUE)
     private TaskPriorityQueue<TaskPriority> taskPriorityQueue;
     @Autowired
-    @Qualifier(Constants.TASK_DISPATCH_FAILED_QUEUE)
-    private TaskPriorityQueue<TaskPriority> taskDispatchFailedQueue;
+    private TaskPriorityQueue<TaskFailedRetryPriority> taskDispatchFailedQueue;
 
     @Override
     public void disconnect() {

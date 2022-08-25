@@ -17,44 +17,40 @@
 
 package org.apache.dolphinscheduler.service.queue;
 
-import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.service.exceptions.TaskPriorityQueueException;
 
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
-@Service(value = Constants.TASK_DISPATCH_FAILED_QUEUE)
-public class TaskDispatchFailedQueue implements TaskPriorityQueue<TaskPriority> {
+@Service
+public class TaskDispatchFailedQueue implements TaskPriorityQueue<TaskFailedRetryPriority> {
 
-    /**
-     * task dispatch failed queue
-     */
-    private final PriorityBlockingQueue<TaskPriority> dispatchFailedQueue = new PriorityBlockingQueue<>(1000);
+    private final DelayQueue<TaskFailedRetryPriority> failedRetryQueue = new DelayQueue<>();
 
     @Override
-    public void put(TaskPriority taskInfo) {
-        dispatchFailedQueue.put(taskInfo);
+    public void put(TaskFailedRetryPriority delayTaskPriority) {
+        failedRetryQueue.put(delayTaskPriority);
     }
 
     @Override
-    public TaskPriority take() throws TaskPriorityQueueException, InterruptedException {
-        return dispatchFailedQueue.take();
+    public TaskFailedRetryPriority take() throws TaskPriorityQueueException, InterruptedException {
+        return failedRetryQueue.take();
     }
 
     @Override
-    public TaskPriority poll(long timeout, TimeUnit unit) throws TaskPriorityQueueException, InterruptedException {
-        return dispatchFailedQueue.poll(timeout, unit);
+    public TaskFailedRetryPriority poll(long timeout, TimeUnit unit) throws TaskPriorityQueueException, InterruptedException {
+        return failedRetryQueue.poll(timeout, unit);
     }
 
     @Override
     public int size() throws TaskPriorityQueueException {
-        return dispatchFailedQueue.size();
+        return failedRetryQueue.size();
     }
 
     @Override
     public void clear() {
-        dispatchFailedQueue.clear();
+        failedRetryQueue.clear();
     }
 }

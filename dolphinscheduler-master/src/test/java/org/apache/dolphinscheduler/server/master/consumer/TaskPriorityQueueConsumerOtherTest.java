@@ -28,6 +28,7 @@ import org.apache.dolphinscheduler.server.master.config.MasterConfig;
 import org.apache.dolphinscheduler.server.master.dispatch.context.ExecutionContext;
 import org.apache.dolphinscheduler.server.master.dispatch.enums.ExecutorType;
 import org.apache.dolphinscheduler.service.exceptions.TaskPriorityQueueException;
+import org.apache.dolphinscheduler.service.queue.TaskFailedRetryPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriority;
 import org.apache.dolphinscheduler.service.queue.TaskPriorityQueue;
 
@@ -58,7 +59,7 @@ public class TaskPriorityQueueConsumerOtherTest {
     private TaskPriorityQueue<TaskPriority> taskPriorityQueue;
 
     @Mock
-    private TaskPriorityQueue<TaskPriority> taskPriorityDispatchFailedQueue;
+    private TaskPriorityQueue<TaskFailedRetryPriority> taskPriorityDispatchFailedQueue;
 
     private TaskExecutionContext taskExecutionContext;
 
@@ -114,14 +115,12 @@ public class TaskPriorityQueueConsumerOtherTest {
         Mockito.when(taskPriorityDispatchFailedQueue.size()).thenReturn(1);
 
         TaskPriority taskPriority = new TaskPriority(1, 1, 1, 1, 1, "1");
-        taskPriority.setLastDispatchTime(System.currentTimeMillis());
         taskPriority.setDispatchFailedRetryTimes(retryTimes);
         Mockito.when(taskPriorityQueue.poll(Constants.SLEEP_TIME_MILLIS, TimeUnit.MILLISECONDS)).thenReturn(taskPriority);
 
         TaskPriority dispatchFailedTaskPriority = new TaskPriority(2, 2, 2, 2, 2, "1");
-        dispatchFailedTaskPriority.setLastDispatchTime(System.currentTimeMillis());
         dispatchFailedTaskPriority.setDispatchFailedRetryTimes(retryTimes);
-        Mockito.when(taskPriorityDispatchFailedQueue.poll(Constants.SLEEP_TIME_MILLIS, TimeUnit.MILLISECONDS)).thenReturn(dispatchFailedTaskPriority);
+        Mockito.when(taskPriorityDispatchFailedQueue.poll(Constants.SLEEP_TIME_MILLIS, TimeUnit.MILLISECONDS)).thenReturn(new TaskFailedRetryPriority(dispatchFailedTaskPriority));
 
         Mockito.when(masterConfig.getDispatchTaskNumber()).thenReturn(1);
     }
