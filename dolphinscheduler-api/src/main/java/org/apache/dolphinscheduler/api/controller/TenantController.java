@@ -25,6 +25,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_TENANT_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.VERIFY_OS_TENANT_CODE_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.TenantService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -83,7 +85,8 @@ public class TenantController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_TENANT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.CREATE)
     public Result createTenant(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                @RequestParam(value = "tenantCode") String tenantCode,
                                @RequestParam(value = "queueId") int queueId,
@@ -111,7 +114,8 @@ public class TenantController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TENANT_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.READ)
     public Result queryTenantlistPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @RequestParam(value = "searchVal", required = false) String searchVal,
                                         @RequestParam("pageNo") Integer pageNo,
@@ -136,7 +140,8 @@ public class TenantController extends BaseController {
     @GetMapping(value = "/list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TENANT_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.READ)
     public Result queryTenantlist(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = tenantService.queryTenantList(loginUser);
         return returnDataList(result);
@@ -162,7 +167,8 @@ public class TenantController extends BaseController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_TENANT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateTenant(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                @PathVariable(value = "id") int id,
                                @RequestParam(value = "tenantCode") String tenantCode,
@@ -187,7 +193,8 @@ public class TenantController extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TENANT_BY_ID_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteTenantById(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @PathVariable(value = "id") int id) throws Exception {
         Map<String, Object> result = tenantService.deleteTenantById(loginUser, id);
@@ -208,7 +215,8 @@ public class TenantController extends BaseController {
     @GetMapping(value = "/verify-code")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(VERIFY_OS_TENANT_CODE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.TENANT,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result verifyTenantCode(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @RequestParam(value = "tenantCode") String tenantCode) {
         return tenantService.verifyTenantCode(tenantCode);

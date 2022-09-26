@@ -27,7 +27,26 @@ public enum AuditOperationType {
     CREATE(0, "CREATE"),
     READ(1, "READ"),
     UPDATE(2, "UPDATE"),
-    DELETE(3, "DELETE");
+    DELETE(3, "DELETE"),
+    LOGIN(4, "LOGIN"),
+    SIGNOUT(5, "SIGNOUT"),
+    CONNECT(6, "CONNECT"),
+    AUTH(7, "UNAUTH"),
+    UNAUTH(8, "UNAUTH"),
+    EXECUTOR(9, "EXECUTOR"),
+    COPY(10, "COPY"),
+    MOVE(11, "MOVE"),
+    SWITCH(12, "SWITCH"),
+    OFFLINE(13, "OFFLINE"),
+    CLOSE(14, "CLOSE"),
+    FORCE_SUCCESS(15, "FORCE_SUCCESS"),
+    STOP(16, "STOP"),
+    RELEASE(17, "RELEASE"),
+    DOWNLOAD(18, "DOWNLOAD"),
+    UPLOAD(19, "UPLOAD"),
+
+    OTHER(999, "OTHER"),
+    ;
 
     private final int code;
     private final String enMsg;

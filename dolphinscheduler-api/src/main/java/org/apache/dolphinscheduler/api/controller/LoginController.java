@@ -22,6 +22,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.SIGN_OUT_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.USER_LOGIN_FAILURE;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.security.Authenticator;
@@ -83,7 +85,8 @@ public class LoginController extends BaseController {
     })
     @PostMapping(value = "/login")
     @ApiException(USER_LOGIN_FAILURE)
-    @AccessLogAnnotation(ignoreRequestArgs = {"userPassword", "request", "response"})
+    @AccessLogAnnotation(ignoreRequestArgs = {"userPassword", "request", "response"},
+            logMoudle = AuditResourceMoudleConstant.ACCESS, operationType = AuditOperationTypeConstant.LOGIN)
     public Result login(@RequestParam(value = "userName") String userName,
                         @RequestParam(value = "userPassword") String userPassword,
                         HttpServletRequest request,
@@ -127,7 +130,8 @@ public class LoginController extends BaseController {
     @ApiOperation(value = "signOut", notes = "SIGNOUT_NOTES")
     @PostMapping(value = "/signOut")
     @ApiException(SIGN_OUT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = {"loginUser", "request"})
+    @AccessLogAnnotation(ignoreRequestArgs = {"loginUser", "request"},
+            logMoudle = AuditResourceMoudleConstant.ACCESS, operationType = AuditOperationTypeConstant.SIGNOUT)
     public Result signOut(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                           HttpServletRequest request) {
         String ip = getClientIpAddress(request);

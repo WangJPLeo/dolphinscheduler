@@ -28,6 +28,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_SCHEDULE_ERROR
 import static org.apache.dolphinscheduler.common.Constants.SESSION_USER;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.SchedulerService;
@@ -106,7 +108,8 @@ public class SchedulerController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.CREATE)
     public Result createSchedule(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                  @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                  @RequestParam(value = "processDefinitionCode") long processDefinitionCode,
@@ -152,7 +155,8 @@ public class SchedulerController extends BaseController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateSchedule(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                  @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                  @PathVariable(value = "id") Integer id,
@@ -183,7 +187,8 @@ public class SchedulerController extends BaseController {
     })
     @PostMapping("/{id}/online")
     @ApiException(PUBLISH_SCHEDULE_ONLINE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.RELEASE)
     public Result publishScheduleOnline(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                         @PathVariable("id") Integer id) {
@@ -205,7 +210,8 @@ public class SchedulerController extends BaseController {
     })
     @PostMapping("/{id}/offline")
     @ApiException(OFFLINE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.OFFLINE)
     public Result offlineSchedule(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                   @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                   @PathVariable("id") Integer id) {
@@ -235,7 +241,8 @@ public class SchedulerController extends BaseController {
     })
     @GetMapping()
     @ApiException(QUERY_SCHEDULE_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.READ)
     public Result queryScheduleListPaging(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @RequestParam long processDefinitionCode,
@@ -268,7 +275,8 @@ public class SchedulerController extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_SCHEDULE_BY_ID_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteScheduleById(@RequestAttribute(value = SESSION_USER) User loginUser,
                                      @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                      @PathVariable("id") Integer id) {
@@ -286,7 +294,8 @@ public class SchedulerController extends BaseController {
     @ApiOperation(value = "queryScheduleList", notes = "QUERY_SCHEDULE_LIST_NOTES")
     @PostMapping("/list")
     @ApiException(QUERY_SCHEDULE_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.UPDATE)
     public Result queryScheduleList(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                     @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode) {
         Map<String, Object> result = schedulerService.queryScheduleList(loginUser, projectCode);
@@ -307,7 +316,8 @@ public class SchedulerController extends BaseController {
     @PostMapping("/preview")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(PREVIEW_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.SCHEDULE,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result previewSchedule(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                   @RequestParam(value = "schedule") String schedule) {
         Map<String, Object> result = schedulerService.previewSchedule(loginUser, schedule);
@@ -342,7 +352,8 @@ public class SchedulerController extends BaseController {
     @PutMapping("/update/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateScheduleByProcessDefinitionCode(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                                         @PathVariable(value = "code") long processDefinitionCode,

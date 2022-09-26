@@ -33,4 +33,10 @@ public @interface AccessLogAnnotation {
     boolean ignoreRequest() default false;
 
     boolean ignoreResponse() default true;
+
+    String logMoudle() default "OTHER";
+
+    String operationType() default "OTHER";
+
+    boolean readOperationFilter() default true;
 }

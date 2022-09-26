@@ -17,8 +17,16 @@
 
 package org.apache.dolphinscheduler.api.audit;
 
+import org.apache.dolphinscheduler.common.Constants;
+import org.apache.dolphinscheduler.common.enums.AuditOperationType;
+import org.apache.dolphinscheduler.common.enums.AuditResourceType;
+import org.apache.dolphinscheduler.common.utils.JSONUtils;
 import org.apache.dolphinscheduler.dao.entity.AuditLog;
+import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.dao.mapper.AuditLogMapper;
+import org.apache.dolphinscheduler.dao.mapper.UserMapper;
+
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,16 +35,30 @@ import org.springframework.stereotype.Component;
 public class AuditSubscriberImpl implements AuditSubscriber {
 
     @Autowired
-    private AuditLogMapper logMapper;
+    private AuditLogMapper auditLogMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
-    public void execute(AuditMessage message) {
+    public void execute(AuditContent content) {
         AuditLog auditLog = new AuditLog();
-        auditLog.setUserId(message.getUser().getId());
-        auditLog.setResourceType(message.getResourceType().getCode());
-        auditLog.setOperation(message.getOperation().getCode());
-        auditLog.setTime(message.getAuditDate());
-        auditLog.setResourceId(message.getResourceId());
-        logMapper.insert(auditLog);
+        Integer userId = content.getUserId();
+        Map<String, Object> allArgs = content.getAllArgs();
+
+        if (userId == null && content.getClassMethodLocation().equals(Constants.LOGIN_PATH)) {
+            User user = userMapper.queryByUserNameAccurately((String) allArgs.get("userName"));
+            if (user == null) {
+                return;
+            }
+            userId = user.getId();
+        }
+        auditLog.setUserId(userId);
+        auditLog.setResourceType(AuditResourceType.valueOf(content.getAuditResourceType()).getCode());
+        auditLog.setOperation(AuditOperationType.valueOf(content.getAuditOperationType()).getCode());
+        auditLog.setDetail(JSONUtils.toJsonString(content));
+        auditLog.setTime(content.getNowTime());
+        auditLog.setResourceId(1);
+        auditLogMapper.insert(auditLog);
     }
 }

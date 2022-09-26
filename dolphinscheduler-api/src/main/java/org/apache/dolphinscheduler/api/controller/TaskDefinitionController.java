@@ -29,6 +29,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.SWITCH_TASK_DEFINITIO
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_TASK_DEFINITION_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.TaskDefinitionService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -90,7 +92,8 @@ public class TaskDefinitionController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.CREATE)
     public Result createTaskDefinition(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                        @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                        @RequestParam(value = "taskDefinitionJson", required = true) String taskDefinitionJson) {
@@ -119,7 +122,8 @@ public class TaskDefinitionController extends BaseController {
     @PostMapping("/save-single")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.CREATE)
     public Result createTaskBindsWorkFlow(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @RequestParam(value = "processDefinitionCode", required = true) long processDefinitionCode,
@@ -148,7 +152,8 @@ public class TaskDefinitionController extends BaseController {
     @PutMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateTaskDefinition(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                        @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                        @PathVariable(value = "code") long code,
@@ -178,7 +183,8 @@ public class TaskDefinitionController extends BaseController {
     @PutMapping(value = "/{code}/with-upstream")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateTaskWithUpstream(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                          @PathVariable(value = "code") long code,
@@ -209,7 +215,8 @@ public class TaskDefinitionController extends BaseController {
     @GetMapping(value = "/{code}/versions")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_DEFINITION_VERSIONS_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskDefinitionVersions(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                               @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                               @PathVariable(value = "code") long code,
@@ -239,7 +246,8 @@ public class TaskDefinitionController extends BaseController {
     @GetMapping(value = "/{code}/versions/{version}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(SWITCH_TASK_DEFINITION_VERSION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.SWITCH)
     public Result switchTaskDefinitionVersion(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                               @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                               @PathVariable(value = "code") long code,
@@ -265,7 +273,8 @@ public class TaskDefinitionController extends BaseController {
     @DeleteMapping(value = "/{code}/versions/{version}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_DEFINITION_VERSION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteTaskDefinitionVersion(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                               @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                               @PathVariable(value = "code") long code,
@@ -290,7 +299,8 @@ public class TaskDefinitionController extends BaseController {
     @DeleteMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_DEFINE_BY_CODE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteTaskDefinitionByCode(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                              @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                              @PathVariable(value = "code") long code) {
@@ -313,7 +323,8 @@ public class TaskDefinitionController extends BaseController {
     @GetMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_DETAIL_OF_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskDefinitionDetail(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @PathVariable(value = "code") long code) {
@@ -347,7 +358,8 @@ public class TaskDefinitionController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_DEFINITION_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskDefinitionListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                 @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                                 @RequestParam(value = "searchWorkflowName", required = false) String searchWorkflowName,
@@ -380,7 +392,8 @@ public class TaskDefinitionController extends BaseController {
     @GetMapping(value = "/gen-task-codes")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LOGIN_USER_QUERY_PROJECT_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result genTaskCodeList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                   @RequestParam("genNum") Integer genNum) {
         Map<String, Object> result = taskDefinitionService.genTaskCodeList(genNum);
@@ -405,7 +418,8 @@ public class TaskDefinitionController extends BaseController {
     @PostMapping(value = "/{code}/release")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(RELEASE_TASK_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_DEFINITION, operationType = AuditOperationTypeConstant.RELEASE)
     public Result releaseTaskDefinition(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                         @PathVariable(value = "code", required = true) long code,

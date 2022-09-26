@@ -21,6 +21,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.DOWNLOAD_TASK_INSTANC
 import static org.apache.dolphinscheduler.api.enums.Status.QUERY_TASK_INSTANCE_LOG_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.LoggerService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -78,7 +80,8 @@ public class LoggerController extends BaseController {
     @GetMapping(value = "/detail")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_INSTANCE_LOG_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.LOGGER, operationType = AuditOperationTypeConstant.READ)
     public Result<ResponseTaskLog> queryLog(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @RequestParam(value = "taskInstanceId") int taskInstanceId,
                                             @RequestParam(value = "skipLineNum") int skipNum,
@@ -100,7 +103,8 @@ public class LoggerController extends BaseController {
     @GetMapping(value = "/download-log")
     @ResponseBody
     @ApiException(DOWNLOAD_TASK_INSTANCE_LOG_FILE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.LOGGER, operationType = AuditOperationTypeConstant.DOWNLOAD)
     public ResponseEntity downloadTaskLog(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @RequestParam(value = "taskInstanceId") int taskInstanceId) {
         byte[] logBytes = loggerService.getLogBytes(taskInstanceId);
@@ -131,7 +135,8 @@ public class LoggerController extends BaseController {
     @GetMapping(value = "/{projectCode}/detail")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_INSTANCE_LOG_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.LOGGER, operationType = AuditOperationTypeConstant.READ)
     public Result<String> queryLog(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                    @RequestParam(value = "taskInstanceId") int taskInstanceId,
@@ -156,7 +161,8 @@ public class LoggerController extends BaseController {
     @GetMapping(value = "/{projectCode}/download-log")
     @ResponseBody
     @ApiException(DOWNLOAD_TASK_INSTANCE_LOG_FILE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.LOGGER, operationType = AuditOperationTypeConstant.DOWNLOAD)
     public ResponseEntity downloadTaskLog(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @RequestParam(value = "taskInstanceId") int taskInstanceId) {

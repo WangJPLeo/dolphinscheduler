@@ -25,6 +25,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.START_TASK_GROUP_ERRO
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_TASK_GROUP_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.TaskGroupQueueService;
 import org.apache.dolphinscheduler.api.service.TaskGroupService;
@@ -83,7 +85,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.CREATE)
     public Result createTaskGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                   @RequestParam("name") String name,
                                   @RequestParam(value = "projectCode", required = false, defaultValue = "0") Long projectcode,
@@ -115,7 +118,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/update")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(UPDATE_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateTaskGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                   @RequestParam("id") Integer id,
                                   @RequestParam("name") String name,
@@ -142,7 +146,8 @@ public class TaskGroupController extends BaseController {
     @GetMapping(value = "/list-paging")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_GROUP_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryAllTaskGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @RequestParam(value = "name", required = false) String name,
                                     @RequestParam(value = "status", required = false) Integer status,
@@ -170,7 +175,8 @@ public class TaskGroupController extends BaseController {
     @GetMapping(value = "/query-list-by-status")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_GROUP_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskGroupByStatus(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @RequestParam("pageNo") Integer pageNo,
                                          @RequestParam(value = "status", required = false) Integer status,
@@ -197,7 +203,8 @@ public class TaskGroupController extends BaseController {
     @GetMapping(value = "/query-list-by-projectCode")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_GROUP_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskGroupByCode(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                        @RequestParam("pageNo") Integer pageNo,
                                        @RequestParam(value = "projectCode", required = false) Long projectCode,
@@ -221,7 +228,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/close-task-group")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CLOSE_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.CLOSE)
     public Result closeTaskGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                  @RequestParam(value = "id", required = false) Integer id) {
 
@@ -243,7 +251,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/start-task-group")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(START_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.RELEASE)
     public Result startTaskGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                  @RequestParam(value = "id", required = false) Integer id) {
         Map<String, Object> result = taskGroupService.startTaskGroup(loginUser, id);
@@ -264,7 +273,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/forceStart")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(START_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.RELEASE)
     public Result forceStart(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                              @RequestParam(value = "queueId") Integer queueId) {
         Map<String, Object> result = taskGroupService.forceStartTask(loginUser, queueId);
@@ -286,7 +296,8 @@ public class TaskGroupController extends BaseController {
     @PostMapping(value = "/modifyPriority")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(START_TASK_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP, operationType = AuditOperationTypeConstant.UPDATE)
     public Result modifyPriority(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                  @RequestParam(value = "queueId") Integer queueId,
                                  @RequestParam(value = "priority") Integer priority) {
@@ -321,7 +332,8 @@ public class TaskGroupController extends BaseController {
     @GetMapping(value = "/query-list-by-group-id")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_GROUP_QUEUE_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_GROUP_QUEUE, operationType = AuditOperationTypeConstant.READ)
     public Result queryTasksByGroupId(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                       @RequestParam(value = "groupId", required = false, defaultValue = "-1") Integer groupId,
                                       @RequestParam(value = "taskInstanceName", required = false) String taskName,

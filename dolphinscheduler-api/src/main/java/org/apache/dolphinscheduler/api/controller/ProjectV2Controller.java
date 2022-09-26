@@ -28,6 +28,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_UNAUTHORIZED_PR
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_PROJECT_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.project.ProjectCreateRequest;
 import org.apache.dolphinscheduler.api.dto.project.ProjectCreateResponse;
 import org.apache.dolphinscheduler.api.dto.project.ProjectDeleteResponse;
@@ -88,7 +90,8 @@ public class ProjectV2Controller extends BaseController {
     @PostMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_PROJECT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.CREATE)
     public ProjectCreateResponse createProject(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                @RequestBody ProjectCreateRequest projectCreateRequest) {
         Result result = projectService.createProject(loginUser, projectCreateRequest.getProjectName(),
@@ -108,7 +111,8 @@ public class ProjectV2Controller extends BaseController {
     @PutMapping(value = "/{code}", consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_PROJECT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.UPDATE)
     public ProjectUpdateResponse updateProject(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                @PathVariable("code") Long code,
                                                @RequestBody ProjectUpdateRequest projectUpdateReq) {
@@ -131,7 +135,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_PROJECT_DETAILS_BY_CODE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectQueryResponse queryProjectByCode(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                    @PathVariable("code") long code) {
         Result result = projectService.queryByCode(loginUser, code);
@@ -154,7 +159,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LOGIN_USER_QUERY_PROJECT_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListPagingResponse queryProjectListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                             ProjectQueryRequest projectQueryReq) {
         Result result = checkPageParams(projectQueryReq.getPageNo(), projectQueryReq.getPageSize());
@@ -181,7 +187,8 @@ public class ProjectV2Controller extends BaseController {
     @DeleteMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_PROJECT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.DELETE)
     public ProjectDeleteResponse deleteProject(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                @PathVariable("code") Long code) {
         Result result = projectService.deleteProject(loginUser, code);
@@ -202,7 +209,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/unauth-project")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_UNAUTHORIZED_PROJECT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListResponse queryUnauthorizedProject(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                         @RequestParam("userId") Integer userId) {
         Result result = projectService.queryUnauthorizedProject(loginUser, userId);
@@ -223,7 +231,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/authed-project")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_AUTHORIZED_PROJECT)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListResponse queryAuthorizedProject(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                       @RequestParam("userId") Integer userId) {
         Result result = projectService.queryAuthorizedProject(loginUser, userId);
@@ -244,7 +253,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/authed-user")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_AUTHORIZED_USER)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public UserListResponse queryAuthorizedUser(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                 @RequestParam("projectCode") Long projectCode) {
         Result result = projectService.queryAuthorizedUser(loginUser, projectCode);
@@ -264,7 +274,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/created-and-authed")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_AUTHORIZED_AND_USER_CREATED_PROJECT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListResponse queryProjectCreatedAndAuthorizedByUser(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Result result = projectService.queryProjectCreatedAndAuthorizedByUser(loginUser);
         return new ProjectListResponse(result);
@@ -283,7 +294,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LOGIN_USER_QUERY_PROJECT_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListResponse queryAllProjectList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Result result = projectService.queryAllProjectList(loginUser);
         return new ProjectListResponse(result);
@@ -299,7 +311,8 @@ public class ProjectV2Controller extends BaseController {
     @GetMapping(value = "/list-dependent")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LOGIN_USER_QUERY_PROJECT_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROJECT, operationType = AuditOperationTypeConstant.READ)
     public ProjectListResponse queryAllProjectListForDependent(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Result result = projectService.queryAllProjectListForDependent();
         return new ProjectListResponse(result);

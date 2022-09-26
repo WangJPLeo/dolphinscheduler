@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuditPublishService {
 
-    private BlockingQueue<AuditMessage> auditMessageQueue = new LinkedBlockingQueue<>();
+    private BlockingQueue<AuditContent> auditMessageQueue = new LinkedBlockingQueue<>();
 
     @Autowired
     private List<AuditSubscriber> subscribers;
@@ -59,11 +59,11 @@ public class AuditPublishService {
     /**
      * publish a new audit message
      *
-     * @param message audit message
+     * @param auditContent audit content
      */
-    public void publish(AuditMessage message) {
-        if (auditConfiguration.getEnabled() && !auditMessageQueue.offer(message)) {
-            logger.error("Publish audit message failed, message:{}", message);
+    public void publish(AuditContent auditContent) {
+        if (auditConfiguration.getEnabled() && !auditMessageQueue.offer(auditContent)) {
+            logger.error("Publish audit message failed, message:{}", auditContent);
         }
     }
 
@@ -71,19 +71,19 @@ public class AuditPublishService {
      *  subscribers execute the message processor method
      */
     private void doPublish() {
-        AuditMessage message = null;
+        AuditContent content = null;
         while (true) {
             try {
-                message = auditMessageQueue.take();
+                content = auditMessageQueue.take();
                 for (AuditSubscriber subscriber : subscribers) {
                     try {
-                        subscriber.execute(message);
+                        subscriber.execute(content);
                     } catch (Exception e) {
-                        logger.error("Consume audit message failed, message:{}", message, e);
+                        logger.error("Consume audit message failed, message:{}", content, e);
                     }
                 }
             } catch (InterruptedException e) {
-                logger.error("Consume audit message failed, message:{}", message, e);
+                logger.error("Consume audit message failed, message:{}", content, e);
                 Thread.currentThread().interrupt();
                 break;
             }

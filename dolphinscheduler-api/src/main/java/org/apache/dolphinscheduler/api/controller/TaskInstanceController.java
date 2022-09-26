@@ -23,6 +23,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.TASK_SAVEPOINT_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.TASK_STOP_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.TaskInstanceService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -99,7 +101,8 @@ public class TaskInstanceController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.READ)
     public Result queryTaskListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                       @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                       @RequestParam(value = "processInstanceId", required = false, defaultValue = "0") Integer processInstanceId,
@@ -142,7 +145,8 @@ public class TaskInstanceController extends BaseController {
     @PostMapping(value = "/{id}/force-success")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(FORCE_TASK_SUCCESS_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.FORCE_SUCCESS)
     public Result<Object> forceTaskSuccess(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                            @PathVariable(value = "id") Integer id) {
@@ -165,7 +169,8 @@ public class TaskInstanceController extends BaseController {
     @PostMapping(value = "/{id}/savepoint")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(TASK_SAVEPOINT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.CREATE)
     public Result<Object> taskSavePoint(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                         @PathVariable(value = "id") Integer id) {
@@ -187,7 +192,8 @@ public class TaskInstanceController extends BaseController {
     @PostMapping(value = "/{id}/stop")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(TASK_STOP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.STOP)
     public Result<Object> stopTask(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                    @PathVariable(value = "id") Integer id) {

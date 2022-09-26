@@ -22,6 +22,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.LIST_WORKERS_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.QUERY_DATABASE_STATE_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.MonitorService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -63,7 +65,8 @@ public class MonitorController extends BaseController {
     @GetMapping(value = "/masters")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LIST_MASTERS_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.MONITOR, operationType = AuditOperationTypeConstant.READ)
     public Result listMaster(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = monitorService.queryMaster(loginUser);
         return returnDataList(result);
@@ -79,7 +82,8 @@ public class MonitorController extends BaseController {
     @GetMapping(value = "/workers")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LIST_WORKERS_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.MONITOR, operationType = AuditOperationTypeConstant.READ)
     public Result listWorker(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = monitorService.queryWorker(loginUser);
         return returnDataList(result);
@@ -95,7 +99,8 @@ public class MonitorController extends BaseController {
     @GetMapping(value = "/databases")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_DATABASE_STATE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.MONITOR, operationType = AuditOperationTypeConstant.READ)
     public Result queryDatabaseState(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = monitorService.queryDatabaseState(loginUser);
         return returnDataList(result);

@@ -61,7 +61,7 @@ export default {
   audit_log: {
     user_name: 'User Name',
     resource_type: 'Resource Type',
-    project_name: 'Project Name',
+    project_name: 'Resource Name',
     operation_type: 'Operation Type',
     create_time: 'Create Time',
     start_time: 'Start Time',

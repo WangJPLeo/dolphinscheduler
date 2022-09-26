@@ -49,6 +49,11 @@ public class AuditLog {
     private Integer operation;
 
     /**
+     * operation detail
+     */
+    private String detail;
+
+    /**
      * resource id
      */
     private Integer resourceId;
@@ -86,6 +91,14 @@ public class AuditLog {
 
     public void setOperation(Integer operation) {
         this.operation = operation;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public Integer getResourceId() {

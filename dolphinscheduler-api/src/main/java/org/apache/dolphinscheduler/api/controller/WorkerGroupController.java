@@ -23,6 +23,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_WORKER_GROUP_FA
 import static org.apache.dolphinscheduler.api.enums.Status.SAVE_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.WorkerGroupService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -82,7 +84,8 @@ public class WorkerGroupController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(SAVE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKER_GROUP, operationType = AuditOperationTypeConstant.CREATE)
     public Result saveWorkerGroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                   @RequestParam(value = "id", required = false, defaultValue = "0") int id,
                                   @RequestParam(value = "name") String name,
@@ -112,7 +115,8 @@ public class WorkerGroupController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_WORKER_GROUP_FAIL)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKER_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryAllWorkerGroupsPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                              @RequestParam("pageNo") Integer pageNo,
                                              @RequestParam("pageSize") Integer pageSize,
@@ -137,7 +141,8 @@ public class WorkerGroupController extends BaseController {
     @GetMapping(value = "/all")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_WORKER_GROUP_FAIL)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKER_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryAllWorkerGroups(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = workerGroupService.queryAllGroup(loginUser);
         return returnDataList(result);
@@ -157,7 +162,8 @@ public class WorkerGroupController extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_WORKER_GROUP_FAIL)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKER_GROUP, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteWorkerGroupById(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @PathVariable("id") Integer id) {
         Map<String, Object> result = workerGroupService.deleteWorkerGroupById(loginUser, id);
@@ -174,7 +180,8 @@ public class WorkerGroupController extends BaseController {
     @GetMapping(value = "/worker-address-list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_WORKER_ADDRESS_LIST_FAIL)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKER_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryWorkerAddressList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = workerGroupService.getWorkerAddressList();
         return returnDataList(result);

@@ -25,6 +25,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_ACCESSTOKEN_LIS
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_ACCESS_TOKEN_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.AccessTokenService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -83,7 +85,8 @@ public class AccessTokenController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_ACCESS_TOKEN_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.CREATE)
     public Result createToken(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                               @RequestParam(value = "userId") int userId,
                               @RequestParam(value = "expireTime") String expireTime,
@@ -104,7 +107,8 @@ public class AccessTokenController extends BaseController {
     @PostMapping(value = "/generate")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(GENERATE_TOKEN_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result generateToken(@RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                 @RequestParam(value = "userId") int userId,
                                 @RequestParam(value = "expireTime") String expireTime) {
@@ -130,7 +134,8 @@ public class AccessTokenController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ACCESSTOKEN_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.READ)
     public Result queryAccessTokenList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                        @RequestParam("pageNo") Integer pageNo,
                                        @RequestParam(value = "searchVal", required = false) String searchVal,
@@ -159,7 +164,8 @@ public class AccessTokenController extends BaseController {
     @GetMapping(value = "/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ACCESSTOKEN_BY_USER_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.READ)
     public Result queryAccessTokenByUser(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @PathVariable("userId") Integer userId) {
         Map<String, Object> result = this.accessTokenService.queryAccessTokenByUser(loginUser, userId);
@@ -177,7 +183,8 @@ public class AccessTokenController extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_ACCESS_TOKEN_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.DELETE)
     public Result delAccessTokenById(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                      @PathVariable(value = "id") int id) {
         Map<String, Object> result = accessTokenService.delAccessTokenById(loginUser, id);
@@ -204,7 +211,8 @@ public class AccessTokenController extends BaseController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_ACCESS_TOKEN_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ACCESS_TOKEN, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateToken(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                               @PathVariable(value = "id") int id,
                               @RequestParam(value = "userId") int userId,

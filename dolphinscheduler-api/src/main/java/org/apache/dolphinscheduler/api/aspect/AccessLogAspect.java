@@ -17,15 +17,23 @@
 
 package org.apache.dolphinscheduler.api.aspect;
 
+import org.apache.dolphinscheduler.api.audit.AuditContent;
+import org.apache.dolphinscheduler.api.audit.AuditPublishService;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.service.SessionService;
 import org.apache.dolphinscheduler.common.Constants;
+import org.apache.dolphinscheduler.dao.entity.Session;
 import org.apache.dolphinscheduler.dao.entity.User;
+import org.apache.dolphinscheduler.dao.mapper.UserMapper;
 import org.apache.dolphinscheduler.spi.utils.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,6 +48,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -49,11 +59,24 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class AccessLogAspect {
     private static final Logger logger = LoggerFactory.getLogger(AccessLogAspect.class);
 
+    @Autowired
+    private AuditPublishService auditPublishService;
+
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private UserMapper userMapper;
+
     private static final String TRACE_ID = "traceId";
 
     public static final String sensitiveDataRegEx = "(password=[\'\"]+)(\\S+)([\'\"]+)";
 
     private static final Pattern sensitiveDataPattern = Pattern.compile(sensitiveDataRegEx, Pattern.CASE_INSENSITIVE);
+
+    public static final String PARAM_HIDE = "userPassword,newPassword,request,response,file";
+
+    private static final String DOLPHIN_SCHEDULER_ROOT_PATH = "/dolphinscheduler";
 
     @Pointcut("@annotation(org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation)")
     public void logPointCut(){
@@ -63,49 +86,100 @@ public class AccessLogAspect {
     @Around("logPointCut()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
+        HttpServletRequest httpServletRequest = servletRequest();
+        Integer userId = userId(httpServletRequest);
 
-        // fetch AccessLogAnnotation
-        MethodSignature sign =  (MethodSignature) proceedingJoinPoint.getSignature();
-        Method method = sign.getMethod();
-        AccessLogAnnotation annotation = method.getAnnotation(AccessLogAnnotation.class);
-
-        String traceId = UUID.randomUUID().toString();
-
-        // log request
-        if (!annotation.ignoreRequest()) {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            if (attributes != null) {
-                HttpServletRequest request = attributes.getRequest();
-                String traceIdFromHeader = request.getHeader(TRACE_ID);
-                if (!StringUtils.isEmpty(traceIdFromHeader)) {
-                    traceId = traceIdFromHeader;
-                }
-                // handle login info
-                String userName = parseLoginInfo(request);
-
-                // handle args
-                String argsString = parseArgs(proceedingJoinPoint, annotation);
-                // handle sensitive data in the string
-                argsString = handleSensitiveData(argsString);
-                logger.info("REQUEST TRACE_ID:{}, LOGIN_USER:{}, URI:{}, METHOD:{}, HANDLER:{}, ARGS:{}",
-                        traceId,
-                        userName,
-                        request.getRequestURI(),
-                        request.getMethod(),
-                        proceedingJoinPoint.getSignature().getDeclaringTypeName() + "." + proceedingJoinPoint.getSignature().getName(),
-                        argsString);
-
-            }
+        Object ob = null;
+        try {
+            ob = proceedingJoinPoint.proceed();
+        } finally {
+            afterProceed(ob, proceedingJoinPoint, httpServletRequest, userId, startTime);
         }
-
-        Object ob = proceedingJoinPoint.proceed();
-
-        // log response
-        if (!annotation.ignoreResponse()) {
-            logger.info("RESPONSE TRACE_ID:{}, BODY:{}, REQUEST DURATION:{} milliseconds", traceId, ob, (System.currentTimeMillis() - startTime));
-        }
-
         return ob;
+    }
+
+    private HttpServletRequest servletRequest() {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            logger.error("get requestAttributes is empty.");
+            return null;
+        }
+        return requestAttributes.getRequest();
+    }
+
+    private Object afterProceed(Object proceed, ProceedingJoinPoint proceedingJoinPoint, HttpServletRequest request,
+                                Integer userId, long startTime) {
+        try {
+            // fetch AccessLogAnnotation
+            MethodSignature methodSignature =  (MethodSignature) proceedingJoinPoint.getSignature();
+            Method method = methodSignature.getMethod();
+            AccessLogAnnotation annotation = method.getAnnotation(AccessLogAnnotation.class);
+
+            // filter
+            if (annotation == null || annotation.ignoreRequest()) {
+                return proceed;
+            }
+            String operationType = annotation.operationType();
+            if (operationType.equals(AuditOperationTypeConstant.READ) && annotation.readOperationFilter()) {
+                return proceed;
+            }
+            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (requestAttributes == null) {
+                logger.error("get requestAttributes is empty.");
+                return proceed;
+            }
+            String returnType = methodSignature.getMethod().getReturnType().getName();
+            Map<String, Object> argsMap = parseArgsMap(proceedingJoinPoint, annotation);
+            String localClassMethod = methodSignature.getName();
+
+            String requestUrl = request.getRequestURI().replace(DOLPHIN_SCHEDULER_ROOT_PATH, Constants.EMPTY_STRING);
+
+            AuditContent auditContent = AuditContent.builder()
+                    .userId(userId)
+                    .auditResourceType(annotation.logMoudle())
+                    .auditOperationType(operationType)
+                    .requestPath(requestUrl)
+                    .requestMethod(request.getMethod())
+                    .currentTimeMills(startTime)
+                    .allArgs(argsMap)
+                    .responseData(proceed)
+                    .executeTimeMills((System.currentTimeMillis() - startTime) + "ms")
+                    .classMethodLocation(localClassMethod)
+                    .remoteIp(request.getRemoteAddr())
+                    .nowTime(new Date())
+                    .responseType(methodSignature.getReturnType().getName())
+                    .language(LocaleContextHolder.getLocale().getLanguage())
+                    .returnType(returnType)
+                    .build();
+
+            // async thrown into the queue
+            auditPublishService.publish(auditContent);
+            return proceed;
+        } catch (Exception e) {
+            logger.error("audit log point cut error", e);
+        }
+        return proceed;
+    }
+
+    private Integer userId(HttpServletRequest request) {
+        try {
+            if (request == null) {
+                return null;
+            }
+            Session session = sessionService.getSession(request);
+            if (Objects.nonNull(session)) {
+                return session.getUserId();
+            }
+            String token = request.getHeader(Constants.TOKEN);
+            if (StringUtils.isEmpty(token)) {
+                return null;
+            }
+            User user = userMapper.queryUserByToken(token, new Date());
+            return user.getId();
+        } catch (Exception e) {
+            logger.error("aspect log user query error", e);
+        }
+        return null;
     }
 
     private String parseArgs(ProceedingJoinPoint proceedingJoinPoint, AccessLogAnnotation annotation) {
@@ -126,6 +200,26 @@ public class AccessLogAspect {
             }
         }
         return argsString;
+    }
+
+    private Map<String, Object> parseArgsMap(ProceedingJoinPoint proceedingJoinPoint, AccessLogAnnotation annotation) {
+        Object[] args = proceedingJoinPoint.getArgs();
+        HashMap<String, Object> argsMap = new HashMap<>(args.length);
+        if (annotation.ignoreRequestArgs().length <= 0) {
+            return argsMap;
+        }
+        String[] parameterNames = ((MethodSignature) proceedingJoinPoint.getSignature()).getParameterNames();
+        if (parameterNames.length <= 0) {
+            return argsMap;
+        }
+        Set<String> ignoreSet = Arrays.stream(annotation.ignoreRequestArgs()).collect(Collectors.toSet());
+        for (int i = 0; i < parameterNames.length; i++) {
+            if (!ignoreSet.contains(parameterNames[i])) {
+                String parameterName = parameterNames[i];
+                argsMap.put(parameterName, PARAM_HIDE.contains(parameterName) ? null : args[i]);
+            }
+        }
+        return argsMap;
     }
 
     protected String handleSensitiveData(String originalData) {

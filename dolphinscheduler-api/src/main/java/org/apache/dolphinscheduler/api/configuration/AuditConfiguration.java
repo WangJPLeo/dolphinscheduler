@@ -27,11 +27,21 @@ import org.springframework.stereotype.Component;
 public class AuditConfiguration {
     private boolean enabled;
 
+    private boolean display;
+
     public boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isDisplay() {
+        return display;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
     }
 }

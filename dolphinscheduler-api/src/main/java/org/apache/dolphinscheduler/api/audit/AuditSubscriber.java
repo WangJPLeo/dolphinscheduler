@@ -22,7 +22,7 @@ public interface AuditSubscriber {
     /**
      * process the audit message
      *
-     * @param message
+     * @param content
      */
-    void execute(AuditMessage message);
+    void execute(AuditContent content);
 }

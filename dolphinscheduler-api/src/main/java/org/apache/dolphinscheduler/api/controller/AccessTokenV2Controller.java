@@ -20,6 +20,8 @@ package org.apache.dolphinscheduler.api.controller;
 import static org.apache.dolphinscheduler.api.enums.Status.CREATE_ACCESS_TOKEN_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.CreateTokenRequest;
 import org.apache.dolphinscheduler.api.dto.CreateTokenResponse;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
@@ -66,7 +68,8 @@ public class AccessTokenV2Controller extends BaseController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiImplicitParam(name = "createTokenRequest", value = "createTokenRequest", required = true, dataTypeClass = CreateTokenRequest.class)
     @ApiException(CREATE_ACCESS_TOKEN_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.TENANT, operationType = AuditOperationTypeConstant.CREATE)
     public CreateTokenResponse createToken(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @RequestBody CreateTokenRequest createTokenRequest) {
         Result result = accessTokenService.createToken(loginUser,

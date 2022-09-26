@@ -20,6 +20,8 @@ package org.apache.dolphinscheduler.api.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.FavTaskDto;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
@@ -66,7 +68,8 @@ public class FavTaskController extends BaseController {
     @GetMapping(value = "/taskTypes")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LIST_TASK_TYPE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.FAVOURITE, operationType = AuditOperationTypeConstant.READ)
     public Result listTaskType(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         List<FavTaskDto> favTaskList = favTaskService.getFavTaskList(loginUser);
         return success(Status.SUCCESS.getMsg(), favTaskList);
@@ -82,7 +85,8 @@ public class FavTaskController extends BaseController {
     @DeleteMapping(value = "/{taskName}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_TYPE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.FAVOURITE, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteFavTask(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                 @PathVariable("taskName") String taskName) {
         boolean b = favTaskService.deleteFavTask(loginUser, taskName);
@@ -99,7 +103,8 @@ public class FavTaskController extends BaseController {
     @PostMapping(value = "/{taskName}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(ADD_TASK_TYPE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.FAVOURITE, operationType = AuditOperationTypeConstant.CREATE)
     public Result addFavTask(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                              @PathVariable("taskName") String taskName) {
         int i = favTaskService.addFavTask(loginUser, taskName);

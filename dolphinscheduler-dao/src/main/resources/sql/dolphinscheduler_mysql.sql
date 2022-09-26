@@ -1888,6 +1888,7 @@ CREATE TABLE `t_ds_audit_log` (
   `user_id` int(11) NOT NULL COMMENT 'user id',
   `resource_type` int(11) NOT NULL COMMENT 'resource type',
   `operation` int(11) NOT NULL COMMENT 'operation',
+  `detail` text DEFAULT NULL COMMENT 'audit log detail',
   `time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `resource_id` int(11) NULL DEFAULT NULL COMMENT 'resource id',
   PRIMARY KEY (`id`)

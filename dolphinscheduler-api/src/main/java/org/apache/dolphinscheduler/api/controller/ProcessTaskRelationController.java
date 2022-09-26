@@ -24,6 +24,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.DELETE_TASK_PROCESS_R
 import static org.apache.dolphinscheduler.api.enums.Status.QUERY_TASK_PROCESS_RELATION_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.ProcessTaskRelationService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -84,7 +86,8 @@ public class ProcessTaskRelationController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_PROCESS_TASK_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.CREATE)
     public Result createProcessTaskRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @RequestParam(name = "processDefinitionCode", required = true) long processDefinitionCode,
@@ -120,7 +123,8 @@ public class ProcessTaskRelationController extends BaseController {
     @DeleteMapping(value = "/{taskCode}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteTaskProcessRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @RequestParam(name = "processDefinitionCode", required = true) long processDefinitionCode,
@@ -147,7 +151,8 @@ public class ProcessTaskRelationController extends BaseController {
     @DeleteMapping(value = "/{taskCode}/upstream")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteUpstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                          @RequestParam(name = "preTaskCodes", required = true) String preTaskCodes,
@@ -174,7 +179,8 @@ public class ProcessTaskRelationController extends BaseController {
     @DeleteMapping(value = "/{taskCode}/downstream")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteDownstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                            @RequestParam(name = "postTaskCodes", required = true) String postTaskCodes,
@@ -199,7 +205,8 @@ public class ProcessTaskRelationController extends BaseController {
     @GetMapping(value = "/{taskCode}/upstream")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_PROCESS_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.READ)
     public Result queryUpstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                         @PathVariable("taskCode") long taskCode) {
@@ -222,7 +229,8 @@ public class ProcessTaskRelationController extends BaseController {
     @GetMapping(value = "/{taskCode}/downstream")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_PROCESS_RELATION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.READ)
     public Result queryDownstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @PathVariable("taskCode") long taskCode) {
@@ -249,7 +257,8 @@ public class ProcessTaskRelationController extends BaseController {
     @DeleteMapping(value = "/{processDefinitionCode}/{preTaskCode}/{postTaskCode}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_EDGE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteEdge(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                              @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                              @PathVariable long processDefinitionCode,

@@ -17,8 +17,9 @@
 
 package org.apache.dolphinscheduler.api.service.impl;
 
-import org.apache.dolphinscheduler.api.audit.AuditMessage;
+import org.apache.dolphinscheduler.api.audit.AuditContent;
 import org.apache.dolphinscheduler.api.audit.AuditPublishService;
+import org.apache.dolphinscheduler.api.configuration.AuditConfiguration;
 import org.apache.dolphinscheduler.api.dto.AuditDto;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.service.AuditService;
@@ -27,6 +28,7 @@ import org.apache.dolphinscheduler.api.utils.Result;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.enums.AuditOperationType;
 import org.apache.dolphinscheduler.common.enums.AuditResourceType;
+import org.apache.dolphinscheduler.common.enums.UserType;
 import org.apache.dolphinscheduler.dao.entity.AuditLog;
 import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.dao.mapper.AuditLogMapper;
@@ -52,6 +54,9 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
     @Autowired
     private AuditPublishService publishService;
 
+    @Autowired
+    private AuditConfiguration auditConfiguration;
+
     /**
      * add new audit log
      *
@@ -62,7 +67,7 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
      */
     @Override
     public void addAudit(User user, AuditResourceType resourceType, Integer resourceId, AuditOperationType operation) {
-        publishService.publish(new AuditMessage(user, new Date(), resourceType, operation, resourceId));
+        publishService.publish(new AuditContent());
     }
 
     /**
@@ -106,6 +111,9 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
         Date end = (Date) checkAndParseDateResult.get(Constants.END_TIME);
 
         Page<AuditLog> page = new Page<>(pageNo, pageSize);
+        if (auditConfiguration.isDisplay() && loginUser.getUserType().equals(UserType.GENERAL_USER)) {
+            userName = loginUser.getUserName();
+        }
         IPage<AuditLog> logIPage = auditLogMapper.queryAuditLog(page, resourceArray, opsArray, userName, start, end);
         List<AuditLog> logList = logIPage != null ? logIPage.getRecords() : new ArrayList<>();
         PageInfo<AuditDto> pageInfo = new PageInfo<>(pageNo, pageSize);

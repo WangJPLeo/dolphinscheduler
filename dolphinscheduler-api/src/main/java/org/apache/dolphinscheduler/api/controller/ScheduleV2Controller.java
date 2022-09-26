@@ -24,6 +24,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_SCHEDULE_LIST_P
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_SCHEDULE_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.schedule.ScheduleCreateRequest;
 import org.apache.dolphinscheduler.api.dto.schedule.ScheduleFilterRequest;
 import org.apache.dolphinscheduler.api.dto.schedule.ScheduleUpdateRequest;
@@ -77,7 +79,8 @@ public class ScheduleV2Controller extends BaseController {
     @PostMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.CREATE)
     public Result<Schedule> createSchedule(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @RequestBody ScheduleCreateRequest scheduleCreateRequest) {
         Schedule schedule = schedulerService.createSchedulesV2(loginUser, scheduleCreateRequest);
@@ -97,7 +100,8 @@ public class ScheduleV2Controller extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_SCHEDULE_BY_ID_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteSchedule(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                  @PathVariable("id") Integer id) {
         schedulerService.deleteSchedulesById(loginUser, id);
@@ -116,7 +120,8 @@ public class ScheduleV2Controller extends BaseController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_SCHEDULE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.UPDATE)
     public Result<Schedule> updateSchedule(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @PathVariable("id") Integer id,
                                            @RequestBody ScheduleUpdateRequest scheduleUpdateRequest) {
@@ -135,7 +140,8 @@ public class ScheduleV2Controller extends BaseController {
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_SCHEDULE_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.READ)
     public Result<Schedule> getSchedule(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @PathVariable("id") Integer id) {
         Schedule schedule = schedulerService.getSchedule(loginUser, id);
@@ -153,7 +159,8 @@ public class ScheduleV2Controller extends BaseController {
     @GetMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_SCHEDULE_LIST_PAGING_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.SCHEDULE, operationType = AuditOperationTypeConstant.READ)
     public Result<PageInfo<Schedule>> filterSchedule(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                      @RequestBody ScheduleFilterRequest scheduleFilterRequest) {
         PageInfo<Schedule> schedules = schedulerService.filterSchedules(loginUser, scheduleFilterRequest);

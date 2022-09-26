@@ -25,6 +25,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_ALL_ALERTGROUP_
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_ALERT_GROUP_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.AlertGroupService;
@@ -87,7 +89,8 @@ public class AlertGroupController extends BaseController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_ALERT_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.CREATE)
     public Result createAlertgroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @RequestParam(value = "groupName") String groupName,
                                    @RequestParam(value = "description", required = false) String description,
@@ -107,7 +110,8 @@ public class AlertGroupController extends BaseController {
     @GetMapping(value = "/list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ALL_ALERTGROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result list(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
 
         Map<String, Object> result = alertGroupService.queryAlertgroup(loginUser);
@@ -132,7 +136,8 @@ public class AlertGroupController extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(LIST_PAGING_ALERT_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result listPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                              @RequestParam(value = "searchVal", required = false) String searchVal,
                              @RequestParam("pageNo") Integer pageNo,
@@ -159,7 +164,8 @@ public class AlertGroupController extends BaseController {
     @PostMapping(value = "/query")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ALERT_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.READ)
     public Result queryAlertGroupById(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                       @RequestParam("id") Integer id) {
 
@@ -186,7 +192,8 @@ public class AlertGroupController extends BaseController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_ALERT_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateAlertgroup(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                    @PathVariable(value = "id") int id,
                                    @RequestParam(value = "groupName") String groupName,
@@ -212,7 +219,8 @@ public class AlertGroupController extends BaseController {
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_ALERT_GROUP_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ALERT_GROUP, operationType = AuditOperationTypeConstant.DELETE)
     public Result delAlertgroupById(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @PathVariable(value = "id") int id) {
         Map<String, Object> result = alertGroupService.delAlertgroupById(loginUser, id);
@@ -232,7 +240,8 @@ public class AlertGroupController extends BaseController {
     })
     @GetMapping(value = "/verify-name")
     @ResponseStatus(HttpStatus.OK)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.ALERT_GROUP,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result verifyGroupName(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                   @RequestParam(value = "groupName") String groupName) {
 

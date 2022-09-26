@@ -711,6 +711,10 @@ public final class Constants {
 
     public static final String SESSION_ID = "sessionId";
 
+    public static final String TOKEN = "token";
+
+    public static final String LOGIN_PATH = "login";
+
     /**
      * locale
      */

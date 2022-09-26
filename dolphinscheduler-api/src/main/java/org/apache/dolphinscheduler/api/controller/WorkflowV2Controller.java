@@ -23,6 +23,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_PROCESS_DEFINIT
 import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_PROCESS_DEFINITION_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.workflow.WorkflowCreateRequest;
 import org.apache.dolphinscheduler.api.dto.workflow.WorkflowFilterRequest;
 import org.apache.dolphinscheduler.api.dto.workflow.WorkflowUpdateRequest;
@@ -76,7 +78,8 @@ public class WorkflowV2Controller extends BaseController {
     @PostMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_PROCESS_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.CREATE)
     public Result<ProcessDefinition> createWorkflow(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                     @RequestBody WorkflowCreateRequest workflowCreateRequest) {
         ProcessDefinition processDefinition =
@@ -98,7 +101,8 @@ public class WorkflowV2Controller extends BaseController {
     @DeleteMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_PROCESS_DEFINE_BY_CODE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteWorkflow(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                  @PathVariable("code") Long code) {
         processDefinitionService.deleteProcessDefinitionByCode(loginUser, code);
@@ -117,7 +121,8 @@ public class WorkflowV2Controller extends BaseController {
     @PutMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_PROCESS_DEFINITION_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.UPDATE)
     public Result<ProcessDefinition> updateWorkflow(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                     @PathVariable("code") Long code,
                                                     @RequestBody WorkflowUpdateRequest workflowUpdateRequest) {
@@ -137,7 +142,8 @@ public class WorkflowV2Controller extends BaseController {
     @GetMapping(value = "/{code}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_PROCESS_DEFINITION_LIST)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result<ProcessDefinition> getWorkflow(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                  @PathVariable("code") Long code) {
         ProcessDefinition processDefinition = processDefinitionService.getProcessDefinition(loginUser, code);
@@ -155,7 +161,8 @@ public class WorkflowV2Controller extends BaseController {
     @GetMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_PROCESS_DEFINITION_LIST)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result<PageInfo<ProcessDefinition>> filterWorkflows(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                                @RequestBody WorkflowFilterRequest workflowFilterRequest) {
         PageInfo<ProcessDefinition> processDefinitions =

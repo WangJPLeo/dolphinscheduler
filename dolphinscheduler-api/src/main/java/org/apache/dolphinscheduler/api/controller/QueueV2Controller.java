@@ -23,6 +23,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_QUEUE_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.VERIFY_QUEUE_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.dto.queue.QueueCreateRequest;
 import org.apache.dolphinscheduler.api.dto.queue.QueueCreateResponse;
 import org.apache.dolphinscheduler.api.dto.queue.QueueListPagingResponse;
@@ -78,7 +80,8 @@ public class QueueV2Controller extends BaseController {
     @GetMapping(value = "/list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_QUEUE_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.YARN_QUEUE, operationType = AuditOperationTypeConstant.READ)
     public QueueListResponse queryList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Result result = queueService.queryList(loginUser);
         return new QueueListResponse(result);
@@ -100,7 +103,8 @@ public class QueueV2Controller extends BaseController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_QUEUE_LIST_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.YARN_QUEUE, operationType = AuditOperationTypeConstant.READ)
     public QueueListPagingResponse queryQueueListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                         QueueQueryRequest queueQueryRequest) {
         Result result = checkPageParams(queueQueryRequest.getPageNo(), queueQueryRequest.getPageSize());
@@ -124,7 +128,8 @@ public class QueueV2Controller extends BaseController {
     @PostMapping(consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_QUEUE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.YARN_QUEUE, operationType = AuditOperationTypeConstant.CREATE)
     public QueueCreateResponse createQueue(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @RequestBody QueueCreateRequest queueCreateRequest) {
         Result result = queueService.createQueue(loginUser, queueCreateRequest.getQueue(), queueCreateRequest.getQueueName());
@@ -146,7 +151,8 @@ public class QueueV2Controller extends BaseController {
     @PutMapping(value = "/{id}", consumes = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(UPDATE_QUEUE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.YARN_QUEUE, operationType = AuditOperationTypeConstant.UPDATE)
     public QueueUpdateResponse updateQueue(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @PathVariable(value = "id") int id, @RequestBody QueueUpdateRequest queueUpdateRequest) {
         Result result = queueService.updateQueue(loginUser, id, queueUpdateRequest.getQueue(),
@@ -165,7 +171,8 @@ public class QueueV2Controller extends BaseController {
     @PostMapping(value = "/verify", consumes = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ApiException(VERIFY_QUEUE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.YARN_QUEUE,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public QueueVerifyResponse verifyQueue(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @RequestBody QueueVerifyRequest queueVerifyRequest) {
         Result result = queueService.verifyQueue(queueVerifyRequest.getQueue(), queueVerifyRequest.getQueueName());

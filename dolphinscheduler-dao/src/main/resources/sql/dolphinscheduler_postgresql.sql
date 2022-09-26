@@ -1864,6 +1864,7 @@ CREATE TABLE t_ds_audit_log (
     user_id int NOT NULL,
     resource_type int NOT NULL,
     operation int NOT NULL,
+    detail text DEFAULT NULL ,
     time timestamp DEFAULT NULL ,
     resource_id int NOT NULL,
     PRIMARY KEY (id)

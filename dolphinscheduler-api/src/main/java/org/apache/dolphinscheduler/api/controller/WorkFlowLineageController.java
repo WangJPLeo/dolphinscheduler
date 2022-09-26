@@ -22,6 +22,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.TASK_WITH_DEPENDENT_E
 import static org.apache.dolphinscheduler.common.Constants.SESSION_USER;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.exceptions.ServiceException;
@@ -73,7 +75,8 @@ public class WorkFlowLineageController extends BaseController {
     @ApiOperation(value = "queryLineageByWorkFlowName", notes = "QUERY_WORKFLOW_LINEAGE_BY_NAME_NOTES")
     @GetMapping(value = "/query-by-name")
     @ResponseStatus(HttpStatus.OK)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKFLOW_LINEAGE, operationType = AuditOperationTypeConstant.READ)
     public Result<List<WorkFlowLineage>> queryWorkFlowLineageByName(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                                                     @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                                                     @RequestParam(value = "workFlowName", required = false) String workFlowName) {
@@ -90,7 +93,8 @@ public class WorkFlowLineageController extends BaseController {
     @ApiOperation(value = "queryLineageByWorkFlowCode", notes = "QUERY_WORKFLOW_LINEAGE_BY_CODES_NOTES")
     @GetMapping(value = "/{workFlowCode}")
     @ResponseStatus(HttpStatus.OK)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKFLOW_LINEAGE, operationType = AuditOperationTypeConstant.READ)
     public Result<Map<String, Object>> queryWorkFlowLineageByCode(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                                                   @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                                                   @PathVariable(value = "workFlowCode", required = true) long workFlowCode) {
@@ -106,7 +110,8 @@ public class WorkFlowLineageController extends BaseController {
     @ApiOperation(value = "queryWorkFlowList", notes = "QUERY_WORKFLOW_LINEAGE_NOTES")
     @GetMapping(value = "/list")
     @ResponseStatus(HttpStatus.OK)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.WORKFLOW_LINEAGE, operationType = AuditOperationTypeConstant.READ)
     public Result<Map<String, Object>> queryWorkFlowLineage(@ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
                                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode) {
         try {
@@ -136,7 +141,8 @@ public class WorkFlowLineageController extends BaseController {
     @PostMapping(value = "/tasks/verify-delete")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(TASK_WITH_DEPENDENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.WORKFLOW_LINEAGE,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result verifyTaskCanDelete(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                       @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                       @RequestParam(value = "processDefinitionCode", required = true) long processDefinitionCode,

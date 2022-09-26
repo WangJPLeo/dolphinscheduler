@@ -114,7 +114,9 @@ registry:
     digest: ~
 
 audit:
-  enabled: false
+  enabled: true
+  # display range: true is no amdin user can only see your own audit log； false is can see all
+  display: true
 
 metrics:
   enabled: true

@@ -25,6 +25,8 @@ import static org.apache.dolphinscheduler.api.enums.Status.UPDATE_ENVIRONMENT_ER
 import static org.apache.dolphinscheduler.api.enums.Status.VERIFY_ENVIRONMENT_ERROR;
 
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.EnvironmentService;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -81,7 +83,8 @@ public class EnvironmentController extends BaseController {
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.CREATE)
     public Result createEnvironment(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @RequestParam("name") String name,
                                     @RequestParam("config") String config,
@@ -114,7 +117,8 @@ public class EnvironmentController extends BaseController {
     @PostMapping(value = "/update")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(UPDATE_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.UPDATE)
     public Result updateEnvironment(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @RequestParam("code") Long code,
                                     @RequestParam("name") String name,
@@ -139,7 +143,8 @@ public class EnvironmentController extends BaseController {
     @GetMapping(value = "/query-by-code")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ENVIRONMENT_BY_CODE_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.READ)
     public Result queryEnvironmentByCode(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @RequestParam("environmentCode") Long environmentCode) {
 
@@ -164,7 +169,8 @@ public class EnvironmentController extends BaseController {
     @GetMapping(value = "/list-paging")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.READ)
     public Result queryEnvironmentListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                              @RequestParam(value = "searchVal", required = false) String searchVal,
                                              @RequestParam("pageSize") Integer pageSize,
@@ -193,7 +199,8 @@ public class EnvironmentController extends BaseController {
     @PostMapping(value = "/delete")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.DELETE)
     public Result deleteEnvironment(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @RequestParam("environmentCode") Long environmentCode) {
 
@@ -211,7 +218,8 @@ public class EnvironmentController extends BaseController {
     @GetMapping(value = "/query-environment-list")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.ENVIRONMENT, operationType = AuditOperationTypeConstant.READ)
     public Result queryAllEnvironmentList(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser) {
         Map<String, Object> result = environmentService.queryAllEnvironmentList(loginUser);
         return returnDataList(result);
@@ -231,7 +239,8 @@ public class EnvironmentController extends BaseController {
     @PostMapping(value = "/verify-environment")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(VERIFY_ENVIRONMENT_ERROR)
-    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser", logMoudle = AuditResourceMoudleConstant.ENVIRONMENT,
+            operationType = AuditOperationTypeConstant.READ, readOperationFilter = false)
     public Result verifyEnvironment(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                     @RequestParam(value = "environmentName") String environmentName) {
         Map<String, Object> result = environmentService.verifyEnvironment(environmentName);
