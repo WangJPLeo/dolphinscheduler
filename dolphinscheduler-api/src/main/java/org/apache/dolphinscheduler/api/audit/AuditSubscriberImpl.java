@@ -43,22 +43,34 @@ public class AuditSubscriberImpl implements AuditSubscriber {
     @Override
     public void execute(AuditContent content) {
         AuditLog auditLog = new AuditLog();
+        Integer userId = buildUserId(content);
+        // operation by unknown user
+        auditLog.setUserId(userId == null ? 0 : userId);
+        auditLog.setResourceType(AuditResourceType.valueOf(content.getAuditResourceType()).getCode());
+        auditLog.setOperation(AuditOperationType.valueOf(content.getAuditOperationType()).getCode());
+        auditLog.setResourceId(null);
+        auditLog.setAroundDetail(JSONUtils.toJsonString(content));
+        auditLog.setSnapshotBeforeOperation(content.getOriginalDataSnapshot());
+        auditLog.setDetailsAfterOperation(detailsAfterOperation(content));
+        auditLog.setTime(content.getNowTime());
+        auditLogMapper.insert(auditLog);
+    }
+
+    private String detailsAfterOperation(AuditContent content) {
+        return null;
+    }
+
+    private Integer buildUserId(AuditContent content) {
         Integer userId = content.getUserId();
         Map<String, Object> allArgs = content.getAllArgs();
 
-        if (userId == null && content.getClassMethodLocation().equals(Constants.LOGIN_PATH)) {
-            User user = userMapper.queryByUserNameAccurately((String) allArgs.get("userName"));
-            if (user == null) {
-                return;
+        if (content.getClassMethodLocation().equals(Constants.LOGIN_PATH)) {
+            User user = userMapper.queryByUserNameAccurately((String) allArgs.get(Constants.LOGIN_USER_NAME));
+            if (userId == null && user == null) {
+                return null;
             }
-            userId = user.getId();
+            return user.getId();
         }
-        auditLog.setUserId(userId);
-        auditLog.setResourceType(AuditResourceType.valueOf(content.getAuditResourceType()).getCode());
-        auditLog.setOperation(AuditOperationType.valueOf(content.getAuditOperationType()).getCode());
-        auditLog.setDetail(JSONUtils.toJsonString(content));
-        auditLog.setTime(content.getNowTime());
-        auditLog.setResourceId(1);
-        auditLogMapper.insert(auditLog);
+        return userId;
     }
 }

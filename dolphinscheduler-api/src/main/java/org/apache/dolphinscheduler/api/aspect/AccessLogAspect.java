@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -67,16 +68,6 @@ public class AccessLogAspect {
 
     @Autowired
     private UserMapper userMapper;
-
-    private static final String TRACE_ID = "traceId";
-
-    public static final String sensitiveDataRegEx = "(password=[\'\"]+)(\\S+)([\'\"]+)";
-
-    private static final Pattern sensitiveDataPattern = Pattern.compile(sensitiveDataRegEx, Pattern.CASE_INSENSITIVE);
-
-    public static final String PARAM_HIDE = "userPassword,newPassword,request,response,file";
-
-    private static final String DOLPHIN_SCHEDULER_ROOT_PATH = "/dolphinscheduler";
 
     @Pointcut("@annotation(org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation)")
     public void logPointCut(){
@@ -132,7 +123,7 @@ public class AccessLogAspect {
             Map<String, Object> argsMap = parseArgsMap(proceedingJoinPoint, annotation);
             String localClassMethod = methodSignature.getName();
 
-            String requestUrl = request.getRequestURI().replace(DOLPHIN_SCHEDULER_ROOT_PATH, Constants.EMPTY_STRING);
+            String requestUrl = request.getRequestURI().replace(Constants.DOLPHIN_SCHEDULER_ROOT_PATH, Constants.EMPTY_STRING);
 
             AuditContent auditContent = AuditContent.builder()
                     .userId(userId)
@@ -182,26 +173,6 @@ public class AccessLogAspect {
         return null;
     }
 
-    private String parseArgs(ProceedingJoinPoint proceedingJoinPoint, AccessLogAnnotation annotation) {
-        Object[] args = proceedingJoinPoint.getArgs();
-        String argsString = Arrays.toString(args);
-        if (annotation.ignoreRequestArgs().length > 0) {
-            String[] parameterNames = ((MethodSignature) proceedingJoinPoint.getSignature()).getParameterNames();
-            if (parameterNames.length > 0) {
-                Set<String> ignoreSet = Arrays.stream(annotation.ignoreRequestArgs()).collect(Collectors.toSet());
-                HashMap<String, Object> argsMap = new HashMap<>();
-
-                for (int i = 0; i < parameterNames.length; i++) {
-                    if (!ignoreSet.contains(parameterNames[i])) {
-                        argsMap.put(parameterNames[i], args[i]);
-                    }
-                }
-                argsString = argsMap.toString();
-            }
-        }
-        return argsString;
-    }
-
     private Map<String, Object> parseArgsMap(ProceedingJoinPoint proceedingJoinPoint, AccessLogAnnotation annotation) {
         Object[] args = proceedingJoinPoint.getArgs();
         HashMap<String, Object> argsMap = new HashMap<>(args.length);
@@ -216,11 +187,15 @@ public class AccessLogAspect {
         for (int i = 0; i < parameterNames.length; i++) {
             if (!ignoreSet.contains(parameterNames[i])) {
                 String parameterName = parameterNames[i];
-                argsMap.put(parameterName, PARAM_HIDE.contains(parameterName) ? null : args[i]);
+                argsMap.put(parameterName, Constants.PARAM_HIDE.contains(parameterName) ? null : args[i]);
             }
         }
         return argsMap;
     }
+
+    public static final String sensitiveDataRegEx = "(password=[\'\"]+)(\\S+)([\'\"]+)";
+
+    private static final Pattern sensitiveDataPattern = Pattern.compile(sensitiveDataRegEx, Pattern.CASE_INSENSITIVE);
 
     protected String handleSensitiveData(String originalData) {
         Matcher matcher = sensitiveDataPattern.matcher(originalData.toLowerCase());
@@ -243,14 +218,4 @@ public class AccessLogAspect {
 
         return originalData;
     }
-
-    private String parseLoginInfo(HttpServletRequest request) {
-        String userName = "NOT LOGIN";
-        User loginUser = (User) (request.getAttribute(Constants.SESSION_USER));
-        if (loginUser != null) {
-            userName = loginUser.getUserName();
-        }
-        return userName;
-    }
-
 }

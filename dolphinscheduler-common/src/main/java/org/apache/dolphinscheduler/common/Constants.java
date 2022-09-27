@@ -711,9 +711,30 @@ public final class Constants {
 
     public static final String SESSION_ID = "sessionId";
 
+    /**
+     * token
+     */
     public static final String TOKEN = "token";
 
+    /**
+     * login path
+     */
     public static final String LOGIN_PATH = "login";
+
+    /**
+     * login user name param
+     */
+    public static final String LOGIN_USER_NAME = "userName";
+
+    /**
+     * params need hide
+     */
+    public static final String PARAM_HIDE = "userPassword,newPassword,request,response,file";
+
+    /**
+     * api root path
+     */
+    public static final String DOLPHIN_SCHEDULER_ROOT_PATH = "/dolphinscheduler";
 
     /**
      * locale

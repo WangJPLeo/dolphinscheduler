@@ -33,7 +33,9 @@ import org.apache.dolphinscheduler.dao.entity.AuditLog;
 import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.dao.mapper.AuditLogMapper;
 
-import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +90,7 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
                                      AuditOperationType operationType, String startDate,
                                      String endDate, String userName,
                                      Integer pageNo, Integer pageSize) {
-        Result result = new Result();
+        Result result = new Result<>();
 
         Map<String, Object> checkAndParseDateResult = checkAndParseDateParameters(startDate, endDate);
         Status resultEnum = (Status) checkAndParseDateResult.get(Constants.STATUS);
@@ -111,16 +113,20 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
         Date end = (Date) checkAndParseDateResult.get(Constants.END_TIME);
 
         Page<AuditLog> page = new Page<>(pageNo, pageSize);
-        if (auditConfiguration.isDisplay() && loginUser.getUserType().equals(UserType.GENERAL_USER)) {
+        if (StringUtils.isEmpty(userName) && auditConfiguration.isDisplay() && loginUser.getUserType().equals(UserType.GENERAL_USER)) {
             userName = loginUser.getUserName();
         }
-        IPage<AuditLog> logIPage = auditLogMapper.queryAuditLog(page, resourceArray, opsArray, userName, start, end);
-        List<AuditLog> logList = logIPage != null ? logIPage.getRecords() : new ArrayList<>();
-        PageInfo<AuditDto> pageInfo = new PageInfo<>(pageNo, pageSize);
+        IPage<AuditLog> auditLogPage = auditLogMapper.queryAuditLog(page, resourceArray, opsArray, userName, start, end);
 
-        List<AuditDto> auditDtos = logList.stream().map(this::transformAuditLog).collect(Collectors.toList());
-        pageInfo.setTotal((int) (auditDtos != null ? auditDtos.size() : 0L));
-        pageInfo.setTotalList(auditDtos);
+        PageInfo<AuditDto> pageInfo = new PageInfo<>(pageNo, pageSize);
+        List<AuditDto> auditDtoList = auditLogPage.getTotal() == 0
+                ? Collections.emptyList()
+                : auditLogPage.getRecords().stream()
+                        .map(this::transformAuditLog)
+                        .collect(Collectors.toList());
+
+        pageInfo.setTotal((int) auditLogPage.getTotal());
+        pageInfo.setTotalList(auditDtoList);
         result.setData(pageInfo);
         putMsg(result, Status.SUCCESS);
         return result;
@@ -138,7 +144,7 @@ public class AuditServiceImpl extends BaseServiceImpl implements AuditService {
         auditDto.setResource(resourceType);
         auditDto.setOperation(AuditOperationType.of(auditLog.getOperation()).getMsg());
         auditDto.setUserName(auditLog.getUserName());
-        auditDto.setResourceName(auditLogMapper.queryResourceNameByType(resourceType, auditLog.getResourceId()));
+        auditDto.setResourceName(auditDto.getResourceName());
         auditDto.setTime(auditLog.getTime());
         return auditDto;
     }
