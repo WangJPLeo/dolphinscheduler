@@ -132,7 +132,7 @@ public class ExecutorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(START_PROCESS_INSTANCE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.EXECUTOR)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.EXECUTE)
     public Result startProcessInstance(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                        @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                        @RequestParam(value = "processDefinitionCode") long processDefinitionCode,
@@ -220,7 +220,7 @@ public class ExecutorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(START_PROCESS_INSTANCE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.EXECUTOR)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.EXECUTE)
     public Result batchStartProcessInstance(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @RequestParam(value = "processDefinitionCodes") String processDefinitionCodes,
@@ -304,7 +304,7 @@ public class ExecutorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(EXECUTE_PROCESS_INSTANCE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTOR)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTE)
     public Result execute(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                           @RequestParam("processInstanceId") Integer processInstanceId,
@@ -334,7 +334,7 @@ public class ExecutorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(BATCH_EXECUTE_PROCESS_INSTANCE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTOR)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTE)
     public Result batchExecute(@RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                @PathVariable long projectCode,
                                @RequestParam("processInstanceIds") String processInstanceIds,
@@ -433,7 +433,7 @@ public class ExecutorController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(START_PROCESS_INSTANCE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTOR)
+            logMoudle = AuditResourceMoudleConstant.TASK_INSTANCE, operationType = AuditOperationTypeConstant.EXECUTE)
     public Result startStreamTaskInstance(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @ApiParam(name = "code", value = "TASK_CODE", required = true) @PathVariable long code,

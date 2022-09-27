@@ -48,13 +48,13 @@ public class AuditResourceMoudleConstant {
 
     public static final String DATA_ANALYSIS = "DATA_ANALYSIS";
 
+    public static final String DATA_QUALITY = "DATA_QUALITY";
+
     public static final String FAVOURITE = "FAVOURITE";
 
     public static final String LOGGER = "LOGGER";
 
     public static final String MONITOR = "MONITOR";
-
-    public static final String PROCESS_TASK_RELATION = "PROCESS_TASK_RELATION";
 
     public static final String SCHEDULE = "SCHEDULE";
 

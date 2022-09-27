@@ -23,6 +23,9 @@ import static org.apache.dolphinscheduler.api.enums.Status.QUERY_EXECUTE_RESULT_
 import static org.apache.dolphinscheduler.api.enums.Status.QUERY_RULE_LIST_ERROR;
 import static org.apache.dolphinscheduler.api.enums.Status.QUERY_RULE_LIST_PAGING_ERROR;
 
+import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
+import org.apache.dolphinscheduler.api.constants.AuditOperationTypeConstant;
+import org.apache.dolphinscheduler.api.constants.AuditResourceMoudleConstant;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.DqExecuteResultService;
 import org.apache.dolphinscheduler.api.service.DqRuleService;
@@ -75,6 +78,8 @@ public class DataQualityController extends BaseController {
     @GetMapping(value = "/getRuleFormCreateJson")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(GET_RULE_FORM_CREATE_JSON_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.DATA_QUALITY, operationType = AuditOperationTypeConstant.READ)
     public Result getRuleFormCreateJsonById(@RequestParam(value = "ruleId") int ruleId) {
         Map<String, Object> result = dqRuleService.getRuleFormCreateJsonById(ruleId);
         return returnDataList(result);
@@ -101,6 +106,8 @@ public class DataQualityController extends BaseController {
     @GetMapping(value = "/rule/page")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_RULE_LIST_PAGING_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.DATA_QUALITY, operationType = AuditOperationTypeConstant.READ)
     public Result queryRuleListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                       @RequestParam(value = "searchVal", required = false) String searchVal,
                                       @RequestParam(value = "ruleType", required = false) Integer ruleType,
@@ -125,6 +132,8 @@ public class DataQualityController extends BaseController {
     @GetMapping(value = "/ruleList")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_RULE_LIST_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.DATA_QUALITY, operationType = AuditOperationTypeConstant.READ)
     public Result queryRuleList() {
         Map<String, Object> result = dqRuleService.queryAllRuleList();
         return returnDataList(result);
@@ -156,6 +165,8 @@ public class DataQualityController extends BaseController {
     @GetMapping(value = "/result/page")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_EXECUTE_RESULT_LIST_PAGING_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.DATA_QUALITY, operationType = AuditOperationTypeConstant.READ)
     public Result queryExecuteResultListPaging(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                                @RequestParam(value = "searchVal", required = false) String searchVal,
                                                @RequestParam(value = "ruleType", required = false) Integer ruleType,
@@ -187,6 +198,8 @@ public class DataQualityController extends BaseController {
     @GetMapping(value = "/getDatasourceOptionsById")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(GET_DATASOURCE_OPTIONS_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
+            logMoudle = AuditResourceMoudleConstant.DATA_QUALITY, operationType = AuditOperationTypeConstant.READ)
     public Result getDatasourceOptionsById(@RequestParam(value = "datasourceId") int datasourceId) {
         Map<String, Object> result = dqRuleService.getDatasourceOptionsById(datasourceId);
         return returnDataList(result);

@@ -87,7 +87,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiException(CREATE_PROCESS_TASK_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.CREATE)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.RELATION)
     public Result createProcessTaskRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @RequestParam(name = "processDefinitionCode", required = true) long processDefinitionCode,
@@ -124,7 +124,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.UNRELATION)
     public Result deleteTaskProcessRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                             @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                             @RequestParam(name = "processDefinitionCode", required = true) long processDefinitionCode,
@@ -152,7 +152,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.UNRELATION)
     public Result deleteUpstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                          @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                          @RequestParam(name = "preTaskCodes", required = true) String preTaskCodes,
@@ -180,7 +180,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_TASK_PROCESS_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.UNRELATION)
     public Result deleteDownstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                            @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                            @RequestParam(name = "postTaskCodes", required = true) String postTaskCodes,
@@ -206,7 +206,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_PROCESS_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.READ)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result queryUpstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                         @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                         @PathVariable("taskCode") long taskCode) {
@@ -230,7 +230,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(QUERY_TASK_PROCESS_RELATION_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.READ)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.READ)
     public Result queryDownstreamRelation(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                                           @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                           @PathVariable("taskCode") long taskCode) {
@@ -258,7 +258,7 @@ public class ProcessTaskRelationController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @ApiException(DELETE_EDGE_ERROR)
     @AccessLogAnnotation(ignoreRequestArgs = "loginUser",
-            logMoudle = AuditResourceMoudleConstant.PROCESS_TASK_RELATION, operationType = AuditOperationTypeConstant.DELETE)
+            logMoudle = AuditResourceMoudleConstant.PROCESS_DEFINITION, operationType = AuditOperationTypeConstant.UNRELATION)
     public Result deleteEdge(@ApiIgnore @RequestAttribute(value = Constants.SESSION_USER) User loginUser,
                              @ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                              @PathVariable long processDefinitionCode,

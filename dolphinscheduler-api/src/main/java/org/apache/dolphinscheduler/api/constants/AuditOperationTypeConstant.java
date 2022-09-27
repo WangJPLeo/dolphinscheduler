@@ -20,7 +20,7 @@ public class AuditOperationTypeConstant {
 
     public static final String UNAUTH = "UNAUTH";
 
-    public static final String EXECUTOR = "EXECUTOR";
+    public static final String EXECUTE = "EXECUTE";
 
     public static final String DOWNLOAD = "DOWNLOAD";
 
@@ -41,4 +41,10 @@ public class AuditOperationTypeConstant {
     public static final String FORCE_SUCCESS = "FORCE_SUCCESS";
 
     public static final String STOP = "STOP";
+
+    public static final String RELATION = "RELATION";
+
+    public static final String UNRELATION = "UNRELATION";
+
+    public static final String OTHER = "OTHER";
 }

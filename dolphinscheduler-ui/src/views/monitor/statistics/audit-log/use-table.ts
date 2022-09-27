@@ -55,7 +55,7 @@ export function useTable() {
         key: 'resource'
       },
       {
-        title: t('monitor.audit_log.project_name'),
+        title: t('monitor.audit_log.resource_name'),
         key: 'resourceName'
       },
       {

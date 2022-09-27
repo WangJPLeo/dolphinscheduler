@@ -33,7 +33,7 @@ public enum AuditOperationType {
     CONNECT(6, "CONNECT"),
     AUTH(7, "UNAUTH"),
     UNAUTH(8, "UNAUTH"),
-    EXECUTOR(9, "EXECUTOR"),
+    EXECUTE(9, "EXECUTE"),
     COPY(10, "COPY"),
     MOVE(11, "MOVE"),
     SWITCH(12, "SWITCH"),
@@ -44,6 +44,8 @@ public enum AuditOperationType {
     RELEASE(17, "RELEASE"),
     DOWNLOAD(18, "DOWNLOAD"),
     UPLOAD(19, "UPLOAD"),
+    RELATION(20, "RELATION"),
+    UNRELATION(21, "UNRELATION"),
 
     OTHER(999, "OTHER"),
     ;
